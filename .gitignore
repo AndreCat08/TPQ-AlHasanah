@@ -1,0 +1,13 @@
+# Node modules
+**/node_modules
+**/.cache
+**/build
+**/.tmp
+
+# Env files
+**/.env
+**/.env.*
+
+# OS
+.DS_Store
+Thumbs.db
