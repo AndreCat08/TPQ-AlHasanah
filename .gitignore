@@ -3,6 +3,8 @@
 **/.cache
 **/build
 **/.tmp
+**/.vscode
+**/.next
 
 # Env files
 **/.env
