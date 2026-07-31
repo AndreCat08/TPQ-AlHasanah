@@ -1,0 +1,79 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Profile {
+  id          Int      @id @default(1)
+  name        String
+  tagline     String
+  phone       String
+  email       String
+  address     String
+  established String
+  statsJson   String   // JSON: Array<{ label: string; count: string }>
+  updatedAt   DateTime @updatedAt
+}
+
+model VisiMisi {
+  id        Int      @id @default(1)
+  visi      String
+  misiJson  String   // JSON: string[]
+  updatedAt DateTime @updatedAt
+}
+
+model Subject {
+  id         Int      @id @default(autoincrement())
+  title      String
+  category   String
+  icon       String   // emoji
+  desc       String
+  topicsJson String   // JSON: string[]
+  order      Int      @default(0)
+  updatedAt  DateTime @updatedAt
+}
+
+model Asatidz {
+  id        Int      @id @default(autoincrement())
+  name      String
+  role      String
+  bio       String
+  image     String   // URL absolut ATAU path lokal "/uploads/xxx.jpg"
+  quote     String
+  order     Int      @default(0)
+  updatedAt DateTime @updatedAt
+}
+
+model Activity {
+  id          Int      @id @default(autoincrement())
+  title       String
+  category    String
+  date        String   // "15 Mei 2026" / "Rutin Mingguan"
+  image       String
+  description String
+  order       Int      @default(0)
+  updatedAt   DateTime @updatedAt
+}
+
+model Doa {
+  id        Int      @id @default(autoincrement())
+  title     String
+  arabic    String
+  latin     String
+  meaning   String
+  order     Int      @default(0)
+  updatedAt DateTime @updatedAt
+}
+
+model Registration {
+  id        Int      @id @default(autoincrement())
+  name      String
+  phone     String
+  program   String
+  message   String
+  createdAt DateTime @default(now())
+}

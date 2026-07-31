@@ -22,12 +22,12 @@ import {
 export const revalidate = 0; // Dynamic server fetching
 
 export default async function HomePage() {
-  const profile = getProfile();
-  const visiMisi = getVisiMisi();
-  const subjects = getSubjects();
-  const asatidz = getAsatidz();
-  const activities = getActivities();
-  const sampleDoas = getSampleDoas();
+  const profile = await getProfile();
+  const visiMisi = await getVisiMisi();
+  const subjects = await getSubjects();
+  const asatidz = await getAsatidz();
+  const activities = await getActivities();
+  const sampleDoas = await getSampleDoas();
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans antialiased selection:bg-emerald-600 selection:text-white">

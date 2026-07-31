@@ -13,7 +13,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const registration = addRegistration(
+    const registration = await addRegistration(
       name,
       phone,
       program || 'Iqra & Tahsin',

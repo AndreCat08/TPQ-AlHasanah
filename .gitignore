@@ -9,6 +9,18 @@
 # Env files
 **/.env
 **/.env.*
+!.env.example
+
+# Database (SQLite)
+prisma/*.db
+prisma/*.db-journal
+
+# Uploaded content
+public/uploads/*
+!public/uploads/.gitkeep
+
+# Arsip data JSON lama
+data/*.bak
 
 # OS
 .DS_Store

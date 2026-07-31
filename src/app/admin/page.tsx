@@ -1,13 +1,21 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { BookOpen, Search, ArrowLeft, RefreshCw, Calendar, Phone, User, MessageSquare, Layers } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { BookOpen, Search, ArrowLeft, RefreshCw, Calendar, Phone, User, MessageSquare, Layers, LogOut } from 'lucide-react';
 import { RegistrationItem } from '@/lib/db';
 
 export default function AdminPage() {
+  const router = useRouter();
   const [registrations, setRegistrations] = useState<RegistrationItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+
+  const handleLogout = async () => {
+    await fetch('/api/admin/logout', { method: 'POST' });
+    router.replace('/admin/login');
+    router.refresh();
+  };
 
   const fetchRegistrations = async () => {
     setLoading(true);
@@ -62,14 +70,25 @@ export default function AdminPage() {
             </div>
           </div>
 
-          <button
-            onClick={fetchRegistrations}
-            disabled={loading}
-            className="flex items-center space-x-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 px-4 py-2 rounded-xl text-xs font-bold text-white transition-all shadow-md"
-          >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-            <span>Refresh Data</span>
-          </button>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={fetchRegistrations}
+              disabled={loading}
+              className="flex items-center space-x-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 px-4 py-2 rounded-xl text-xs font-bold text-white transition-all shadow-md"
+            >
+              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+              <span>Refresh Data</span>
+            </button>
+
+            <button
+              onClick={handleLogout}
+              className="flex items-center space-x-2 bg-slate-800 hover:bg-red-900/60 border border-slate-700 hover:border-red-800 px-4 py-2 rounded-xl text-xs font-bold text-slate-300 hover:text-red-300 transition-all"
+              title="Keluar dari panel admin"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>Keluar</span>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -144,9 +163,9 @@ export default function AdminPage() {
                 <div key={reg.id} className="p-5 hover:bg-slate-750 transition-colors space-y-3">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div className="flex items-center space-x-3">
-                      <span className="text-xs font-mono font-bold bg-slate-900 text-emerald-400 border border-slate-700 px-2.5 py-1 rounded-lg">
-                        {reg.id}
-                      </span>
+<span className="text-xs font-mono font-bold bg-slate-900 text-emerald-400 border border-slate-700 px-2.5 py-1 rounded-lg">
+                         REG-{reg.id}
+                       </span>
                       <h3 className="font-bold text-base text-white flex items-center space-x-2">
                         <User className="w-4 h-4 text-amber-400" />
                         <span>{reg.name}</span>
