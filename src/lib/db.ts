@@ -72,22 +72,63 @@ export interface DBStructure {
 
 function adaptProfile(profile: any): ProfileData {
   return {
-    ...profile,
+    name: profile.name,
+    tagline: profile.tagline,
+    phone: profile.phone,
+    email: profile.email,
+    address: profile.address,
+    established: profile.established,
     stats: JSON.parse(profile.statsJson)
   }
 }
 
 function adaptVisiMisi(visiMisi: any): VisiMisiData {
   return {
-    ...visiMisi,
+    visi: visiMisi.visi,
     misi: JSON.parse(visiMisi.misiJson)
   }
 }
 
 function adaptSubject(subject: any): SubjectItem {
   return {
-    ...subject,
+    id: subject.id,
+    title: subject.title,
+    category: subject.category,
+    icon: subject.icon,
+    desc: subject.desc,
     topics: JSON.parse(subject.topicsJson)
+  }
+}
+
+function adaptAsatidz(asatidz: any): AsatidzItem {
+  return {
+    id: asatidz.id,
+    name: asatidz.name,
+    role: asatidz.role,
+    bio: asatidz.bio,
+    image: asatidz.image,
+    quote: asatidz.quote
+  }
+}
+
+function adaptActivity(activity: any): ActivityItem {
+  return {
+    id: activity.id,
+    title: activity.title,
+    category: activity.category,
+    date: activity.date,
+    image: activity.image,
+    description: activity.description
+  }
+}
+
+function adaptSampleDoa(doa: any): SampleDoaItem {
+  return {
+    id: doa.id,
+    title: doa.title,
+    arabic: doa.arabic,
+    latin: doa.latin,
+    meaning: doa.meaning
   }
 }
 
@@ -112,21 +153,21 @@ export async function getAsatidz(): Promise<AsatidzItem[]> {
   const asatidz = await prisma.asatidz.findMany({
     orderBy: [{ order: 'asc' }, { id: 'asc' }]
   })
-  return asatidz
+  return asatidz.map(adaptAsatidz)
 }
 
 export async function getActivities(): Promise<ActivityItem[]> {
   const activities = await prisma.activity.findMany({
     orderBy: [{ order: 'asc' }, { id: 'asc' }]
   })
-  return activities
+  return activities.map(adaptActivity)
 }
 
 export async function getSampleDoas(): Promise<SampleDoaItem[]> {
   const sampleDoas = await prisma.doa.findMany({
     orderBy: [{ order: 'asc' }, { id: 'asc' }]
   })
-  return sampleDoas
+  return sampleDoas.map(adaptSampleDoa)
 }
 
 export async function getRegistrations(): Promise<RegistrationItem[]> {

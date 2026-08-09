@@ -19,7 +19,8 @@ prisma/*.db-journal
 public/uploads/*
 !public/uploads/.gitkeep
 
-# Arsip data JSON lama
+# Arsip data JSON lama (Fase 4: dialihkan ke Prisma)
+data/db.json
 data/*.bak
 
 # OS
