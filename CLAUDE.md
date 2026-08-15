@@ -7,16 +7,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Before starting work, read `AGENTS.md` and the files in `agent-docs/`:
 - `agent-docs/project-context.md` — architecture, tech stack, project structure (written in Indonesian)
 - `agent-docs/memory.md` — command history, architectural decisions, and change log
+- `agent-docs/roadmap.md` — project phase roadmap and status tracking
 
-`AGENTS.md` mandates a skill-driven workflow: if a task matches an available skill (spec-driven-development, planning-and-task-breakdown, debugging-and-error-recovery, code-review-and-quality, code-simplification, api-and-interface-design, frontend-ui-engineering, incremental-implementation, test-driven-development), invoke the skill rather than implementing directly. Append significant decisions and changes to `agent-docs/memory.md` when you finish work.
+`AGENTS.md` mandates a skill-driven workflow: if a task matches an available skill (spec-driven-development, planning-and-task-breakdown, debugging-and-error-recovery, code-review-and-quality, code-simplification, api-and-interface-design, frontend-ui-engineering, incremental-implementation, test-driven-development), invoke the skill rather than implementing directly. **NEVER rewrite `agent-docs/memory.md` — only append new entries or edit specific sections.** Update phase status in `agent-docs/roadmap.md` instead.
 
 ## Commands
 
 ```bash
-npm run dev      # dev server on http://localhost:3000
-npm run build    # production build — the only type-check gate in this repo
-npm run start    # serve the production build
+npm run dev          # dev server on http://localhost:3000
+npm run dev:nodemon  # same dev server, launched via nodemon (see nodemon.json)
+npm run build        # production build — the only type-check gate in this repo
+npm run start        # serve the production build
 ```
+
+`npm run dev:nodemon` wraps `next dev` with nodemon, watching only `.env`, `.env.local`, and `prisma/schema.prisma` (see `nodemon.json`) — files Next's own dev server doesn't hot-reload. Everything under `src/` is left to Next's Fast Refresh instead of nodemon, since a full-process restart on every source save is slower and loses component state. The exec command is `npx kill-port 3000 && next dev`: on Windows, nodemon's restart doesn't reliably kill the whole `next dev` process tree, so without this the old process keeps holding port 3000 and the new one silently falls back to 3001.
 
 `npm run lint` exists in package.json but there is no ESLint config or `eslint` dependency installed; running it triggers Next.js's interactive setup prompt. There is no test framework. **Verification = `npm run build` plus manual checks in the browser.**
 

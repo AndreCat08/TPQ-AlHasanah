@@ -12,6 +12,7 @@ This Next.js project is a fullstack web application for TPQ Al-Hasanah.
 Before executing tasks, inspect the files in `agent-docs/`:
 - 📄 [project-context.md](file:///d:/Project%20Pribadi/TPQ-AlHasanah/agent-docs/project-context.md): Architecture overview, tech stack, and full project structure.
 - 📄 [memory.md](file:///d:/Project%20Pribadi/TPQ-AlHasanah/agent-docs/memory.md): Command history, architectural decisions, and change logs.
+- 📄 [roadmap.md](file:///d:/Project%20Pribadi/TPQ-AlHasanah/agent-docs/roadmap.md): Project phase roadmap and status tracking.
 
 ---
 
@@ -102,3 +103,14 @@ The following thoughts are incorrect and must be ignored:
 Correct behavior:
 
 - Always check `AGENTS.md` and use skills first.
+
+---
+
+## Memory File Rules
+
+When updating `agent-docs/memory.md`:
+- **NEVER rewrite the entire file** — only append new entries or edit specific sections.
+- Append new commands to the History Commands table.
+- Append new decisions to the Decisions section.
+- Append new changes to the Changes Log section.
+- Update phase status in `agent-docs/roadmap.md`, not in `memory.md`.

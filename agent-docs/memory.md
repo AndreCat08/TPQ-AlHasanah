@@ -20,6 +20,11 @@ Dokumen ini mencatat riwayat perintah, keputusan arsitektur, dan daftar perubaha
 | 2026-07-30 | `npm run db:seed` | Migrasi data awal JSON → SQLite (idempoten, dijalankan 2×) |
 | 2026-07-31 | `npx tsx prisma/seed-verify.ts` | Verifikasi migrasi: 1 Profile, 1 VisiMisi, 6 Subject, 4 Asatidz, 6 Activity, 4 Doa, 1 Registration (id:1001) ✅ |
 | 2026-07-31 | `npm run build` | ✅ (16 rute + Middleware 27KB) |
+| 2026-07-31 | `npx prisma db push` | Sync schema setelah perubahan DB path. *(Berhasil)* |
+| 2026-07-31 | `npx prisma generate` | Regenerate Prisma Client v6.19.3. *(Berhasil)* |
+| 2026-07-31 | `npm run db:seed` | Idempoten, registrasi terakhir ID:1002. *(Berhasil)* |
+| 2026-07-31 | `npm run dev` | Homepage `GET /` 200. *(Berhasil)* |
+| 2026-07-31 | Update `.env.local` | Ganti `DATABASE_URL` ke absolute path Windows agar Prisma konek dev server. |
 
 ---
 
@@ -181,25 +186,85 @@ Verifikasi (curl terhadap `npm run dev`, semua lolos): `/api/registrations` tanp
 - Migrasi data: 1 Profile, 1 VisiMisi, 6 Subject, 4 Asatidz, 6 Activity, 4 Doa, 1 Registration (id:1001) — semua berhasil.
 - `src/lib/db.ts` belum disentuh (fase 2 murni aditif).
 
-### ⏳ Sisa fase (belum dikerjakan)
+### ⏳ Roadmap: lihat [agent-docs/roadmap.md](roadmap.md) 
 
-| # | Fase | Inti pekerjaan | Risiko |
-|---|---|---|---|
-| 3 | Alihkan pembacaan ke Prisma | Tulis ulang `db.ts` → getter **async** yang map baris Prisma ke interface existing (parse JSON, buang `order`/`updatedAt`). Tambah `await` di `src/app/page.tsx:25-30` + 7 route GET. **Interface & seluruh `src/components/` tidak berubah.** | ⚠️ **Paling berisiko** — menyentuh semua jalur baca. Bandingkan homepage sebelum/sesudah dengan teliti |
-| 4 | Alihkan penulisan | `addRegistration` async, uji `POST /api/contact`, badge ID → `REG-{id}`. Setelah lolos: arsipkan `data/db.json` → `data/db.json.bak`, `git rm --cached data/db.json`, hapus `INITIAL_DATA`/`ensureDB`/`writeDB` dari `db.ts` | Sedang |
-| 5 | Shell admin + primitive | `src/app/admin/layout.tsx` dengan sidebar, komponen di `src/components/admin/`, pindahkan viewer pendaftaran ke `/admin/pendaftaran`, dashboard baru di `/admin`. | Rendah |
-| 6 | CMS singleton | `src/lib/validation.ts` (zod, pesan error Indonesia), `/admin/profil` + `/admin/visi-misi` via Server Action. **Fase pertama yang menghasilkan CMS betulan yang bisa dipakai** | Rendah |
-| 7 | CMS koleksi | `CollectionEditor`, lalu `/admin/doa` → `/admin/mata-pelajaran` → `/admin/asatidz` → `/admin/kegiatan` (mulai dari termudah). CRUD + reorder | Sedang |
-| 8 | Upload gambar | `POST /api/admin/upload` → `public/uploads/`. Nama file `${slug}-Date.now()}.${ext}` dengan ekstensi dari **whitelist MIME** (bukan dari nama file — path traversal). Maks 2 MB, MIME jpeg/png/webp | Rendah |
-| 9 | Pemantapan | Hapus pendaftaran, export CSV, update `agent-docs/*` + `CLAUDE.md` + `project-context.md` | Rendah |
+---
 
-**Gate verifikasi**: tidak ada test framework, dan `npm run lint` rusak (tidak ada config ESLint). **Gate verifikasi = `npm run build` + pemeriksaan manual di browser.** Per fase:
+## 📝 5. Session 2026-07-31: Doa & Amalan UI
 
-1. **Auth (fase 1):** ✅ `npm run dev`, buka `/admin` dalam incognito → redirect ke `/admin/login`. `curl http://localhost:3000/api/registrations` → 401, bukan data. Login dengan password benar → masuk. Password salah → pesan error. Logout → cookie hilang, `/admin` redirect lagi. Restart server → cookie masih valid (HMAC stateless).
-2. **Prisma (fase 2):** ✅ `npx prisma studio` → cek 6 subject, 4 asatidz, 6 activity, 4 doa, 1 profile, 1 visiMisi, **dan seluruh pendaftaran dari `data/db.json` ikut termigrasi**. Jalankan `npm run db:seed` dua kali → tidak ada duplikat (idempoten).
-3. **Baca (fase 3):** screenshot homepage sebelum migrasi, bandingkan sesudah — setiap section (hero stats, visi-misi, 6 kartu matpel dengan topics-nya, doa dengan teks Arab, filter kategori kegiatan, kartu asatidz) harus identik. Cek juga tiap `GET /api/*` masih mengembalikan envelope yang sama.
-4. **Tulis (fase 4):** submit form kontak di homepage → cek muncul di `/admin/pendaftaran` dan di Prisma Studio. Cek link WhatsApp di admin masih benar.
-5. **CMS (fase 6–7):** untuk setiap screen — ubah satu field, simpan, muat ulang homepage di tab lain, konfirmasi berubah. Uji validasi dengan mengosongkan field wajib (harus muncul pesan Indonesia, bukan crash). Uji create + delete + reorder. Cek teks Arab pada form doa tersimpan utuh (RTL/Unicode).
-6. **Upload (fase 8):** upload JPG → preview muncul, file ada di `public/uploads/`, homepage merender foto baru. Coba upload PDF → ditolak dengan pesan Indonesia. Coba file >2MB → ditolak. Pastikan asatidz yang masih pakai URL Unsplash tetap tampil.
-7. **Terakhir:** `npm run build` harus lolos, lalu `npm run start` dan ulangi pemeriksaan homepage + login pada build produksi (perilaku cookie `secure` berbeda di prod).
+### Ringkasan
+Pada sesi ini dibuat halaman publik `Doa & Amalan` dan komponennya. Komponen `DoaSection.tsx` yang sebelumnya ketimpa (terganti versi sederhana) direstore ke versi lengkap dengan fitur selector doa interaktif.
+
+### File Dibuat
+- `src/app/doadanamaian/page.tsx` — halaman mandiri Doa & Amalan, fetch data via `getSampleDoas()` dari Prisma
+
+### File Diperbaiki/Direstore
+- `src/components/DoaSection.tsx` — dikembalikan ke versi lengkap (client component dengan state selector doa, teks Arab/Latin/Artinya)
+
+### Verifikasi
+- `npm run build` ✅ lolos tanpa error
+- Halaman `/doadanamaian` aktif dengan data doa dari Prisma seed
+
+### Status
+- ✅ SELESAI
+
+---
+
+## 📝 6. Session 2026-08-09: Perbaikan Fase 3 + rename rute Doa & Amalan
+
+### Ringkasan
+Verifikasi Fase 3 menemukan `getAsatidz`/`getActivities`/`getSampleDoas` di `src/lib/db.ts` mengembalikan baris Prisma mentah (membocorkan `order`/`updatedAt`), dan adapter lain (`adaptProfile`/`adaptVisiMisi`/`adaptSubject`) men-spread field mentah termasuk `*Json` sebelum menambah field hasil parse. Diperbaiki dengan konstruksi objek eksplisit di semua adapter. `src/app/doadanamaian/page.tsx` (dibuat sesi 2026-07-31) punya signature page tidak valid (prop `doas` alih-alih page props standar) yang menggagalkan `npm run build` — ditulis ulang jadi async Server Component. Folder rute lalu di-`git mv` dari `src/app/doadanamaian` ke `src/app/doaDanAmalan` untuk memperbaiki typo ("amaian" → "amalan") dan konsisten camelCase; rute publik kini `/doaDanAmalan`.
+
+### File Diubah
+- `src/lib/db.ts` — enam adapter dikonstruksi eksplisit sesuai interface
+- `src/app/doadanamaian/page.tsx` → `src/app/doaDanAmalan/page.tsx` (rename + rewrite jadi async Server Component)
+
+### Verifikasi
+- `npm run build` ✅ lolos
+- curl `GET /api/{subjects,asatidz,activities,doas,profile,visimisi}` — tidak ada lagi field `order`/`updatedAt`/`*Json` mentah
+- `GET /doaDanAmalan` → 200
+
+### Status
+- ✅ SELESAI
+
+---
+
+## 📝 7. Session 2026-08-09: Tuntaskan Fase 4 (alihkan penulisan)
+
+### Ringkasan
+Verifikasi Fase 4: `addRegistration` sudah async via Prisma sejak Fase 3, diuji end-to-end lewat `POST /api/contact` (data dummy dibuat lalu dihapus lagi). Badge `REG-{id}` dan link WhatsApp di admin sudah benar. Langkah arsip yang belum dikerjakan dituntaskan: `data/db.json` di-`mv` ke `data/db.json.bak`, di-`git rm --cached`, dan ditambahkan ke `.gitignore`.
+
+### File Diubah
+- `.gitignore` — tambah `data/db.json`
+- `data/db.json` → `data/db.json.bak` (untracked dari git, tetap ada di disk sebagai arsip)
+
+### Verifikasi
+- `POST /api/contact` → `GET /api/registrations` (login admin) menunjukkan data baru tersimpan di Prisma
+- `npm run build` ✅ lolos setelah `data/db.json` di-untrack
+
+### Status
+- ✅ SELESAI
+
+---
+
+## 📝 8. Session 2026-08-09: Setup nodemon
+
+### Ringkasan
+Ditambahkan `npm run dev:nodemon` sebagai alternatif menjalankan dev server lewat nodemon. Percobaan awal watch `src` + `next.config.js` + `tailwind.config.js` ternyata bermasalah di Windows: `next.config.js` sudah di-hot-reload sendiri oleh Next, jadi nodemon ikut restart di atasnya menyebabkan race — proses `next dev` lama tidak sempat melepas port 3000 sebelum yang baru start, sehingga server baru jatuh ke port 3001. Diperbaiki dengan (1) mempersempit `watch` nodemon hanya ke file yang **tidak** di-hot-reload Next sendiri (`.env`, `.env.local`, `prisma/schema.prisma` — `src/` dibiarkan ke Fast Refresh Next), dan (2) mengganti `exec` jadi `npx kill-port 3000 && next dev` supaya port lama selalu dibebaskan dulu sebelum restart, karena nodemon di Windows tidak selalu berhasil mematikan seluruh process tree `next dev`.
+
+### File Dibuat
+- `nodemon.json` — watch `.env`/`.env.local`/`prisma/schema.prisma`, exec `npx kill-port 3000 && next dev`, delay 1000ms
+
+### File Diubah
+- `package.json` — script baru `dev:nodemon`, devDependency `nodemon` + `kill-port`
+- `CLAUDE.md` — dokumentasi command `dev:nodemon`
+
+### Verifikasi
+- Start bersih di port 3000 (bukan 3001)
+- Touch `.env.local` → nodemon restart, port 3000 tetap terpakai (tidak jatuh ke 3001), server up lagi dan merespons 200
+- Touch `src/app/page.tsx` → nodemon **tidak** restart (dibiarkan ke Fast Refresh Next), tetap kompilasi ulang otomatis
+- Semua proses `node`/`next dev` sisa percobaan dibersihkan lewat `taskkill /T /F`
+
+### Status
+- ✅ SELESAI
 
