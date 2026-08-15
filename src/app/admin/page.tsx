@@ -1,226 +1,118 @@
-'use client';
+import { getRegistrations, getProfile, getSubjects, getAsatidz, getActivities } from '@/lib/db';
+import { requireSession } from '@/lib/session';
+import Link from 'next/link';
+import { Users, BookOpen, UserCheck, Calendar, ArrowRight } from 'lucide-react';
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { BookOpen, Search, ArrowLeft, RefreshCw, Calendar, Phone, User, MessageSquare, Layers, LogOut } from 'lucide-react';
-import { RegistrationItem } from '@/lib/db';
+export default async function AdminDashboardPage() {
+  requireSession();
 
-export default function AdminPage() {
-  const router = useRouter();
-  const [registrations, setRegistrations] = useState<RegistrationItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
+  const registrations = await getRegistrations();
+  const profile = await getProfile();
+  const subjects = await getSubjects();
+  const asatidz = await getAsatidz();
+  const activities = await getActivities();
 
-  const handleLogout = async () => {
-    await fetch('/api/admin/logout', { method: 'POST' });
-    router.replace('/admin/login');
-    router.refresh();
-  };
-
-  const fetchRegistrations = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch('/api/registrations');
-      const data = await res.json();
-      if (data.success) {
-        setRegistrations(data.data);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchRegistrations();
-  }, []);
-
-  const filteredRegistrations = registrations.filter((reg) => {
-    const term = searchTerm.toLowerCase();
-    return (
-      reg.name.toLowerCase().includes(term) ||
-      reg.phone.toLowerCase().includes(term) ||
-      reg.program.toLowerCase().includes(term) ||
-      reg.message.toLowerCase().includes(term)
-    );
-  });
+  const recentRegistrations = registrations.slice(0, 5);
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 font-sans antialiased">
-      {/* Header */}
-      <header className="bg-slate-950 border-b border-slate-800 py-4 px-6 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <a
-              href="/"
-              className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
-              title="Kembali ke Beranda"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </a>
-            <div className="flex items-center space-x-2">
-              <div className="w-9 h-9 rounded-xl bg-emerald-600 flex items-center justify-center font-bold text-white">
-                <BookOpen className="w-5 h-5" />
-              </div>
-              <div>
-                <h1 className="text-lg font-bold text-white">Panel Admin TPQ Al-Hasanah</h1>
-                <p className="text-xs text-slate-400">Manajemen Data Pendaftaran Santri Baru</p>
-              </div>
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold text-gray-800">Dashboard Admin</h1>
+      <p className="text-gray-600">Selamat datang di panel admin {profile.name}.</p>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="bg-white p-6 rounded-lg shadow border-l-4 border-blue-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-500">Total Pendaftar</p>
+              <p className="text-2xl font-bold text-gray-800">{registrations.length}</p>
             </div>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={fetchRegistrations}
-              disabled={loading}
-              className="flex items-center space-x-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 px-4 py-2 rounded-xl text-xs font-bold text-white transition-all shadow-md"
-            >
-              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-              <span>Refresh Data</span>
-            </button>
-
-            <button
-              onClick={handleLogout}
-              className="flex items-center space-x-2 bg-slate-800 hover:bg-red-900/60 border border-slate-700 hover:border-red-800 px-4 py-2 rounded-xl text-xs font-bold text-slate-300 hover:text-red-300 transition-all"
-              title="Keluar dari panel admin"
-            >
-              <LogOut className="w-4 h-4" />
-              <span>Keluar</span>
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto p-6 space-y-6">
-        {/* Stats cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <div className="bg-slate-800/80 border border-slate-700 p-5 rounded-2xl">
-            <div className="text-xs text-slate-400 font-bold uppercase tracking-wider">Total Pendaftar</div>
-            <div className="text-3xl font-black text-amber-400 mt-2">{registrations.length}</div>
-            <div className="text-xs text-slate-400 mt-1">Formulir masuk via website</div>
-          </div>
-
-          <div className="bg-slate-800/80 border border-slate-700 p-5 rounded-2xl">
-            <div className="text-xs text-slate-400 font-bold uppercase tracking-wider">Status Sistem</div>
-            <div className="text-3xl font-black text-emerald-400 mt-2">Aktif</div>
-            <div className="text-xs text-slate-400 mt-1">Fullstack API & Database JSON</div>
-          </div>
-
-          <div className="bg-slate-800/80 border border-slate-700 p-5 rounded-2xl">
-            <div className="text-xs text-slate-400 font-bold uppercase tracking-wider">Update Terakhir</div>
-            <div className="text-base font-bold text-white mt-2">
-              {registrations.length > 0
-                ? new Date(registrations[0].createdAt).toLocaleDateString('id-ID', {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                  })
-                : '-'}
-            </div>
-            <div className="text-xs text-slate-400 mt-1">Pendaftaran terbaru</div>
+            <Users className="text-blue-500" size={32} />
           </div>
         </div>
 
-        {/* Filter and Search */}
-        <div className="bg-slate-800 border border-slate-700 p-4 rounded-2xl flex items-center space-x-3">
-          <Search className="w-5 h-5 text-slate-400" />
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Cari berdasarkan nama, nomor WA, program, atau pesan..."
-            className="flex-1 bg-transparent border-none text-sm text-white focus:outline-none placeholder-slate-500"
-          />
+        <div className="bg-white p-6 rounded-lg shadow border-l-4 border-emerald-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-500">Mata Pelajaran</p>
+              <p className="text-2xl font-bold text-gray-800">{subjects.length}</p>
+            </div>
+            <BookOpen className="text-emerald-500" size={32} />
+          </div>
         </div>
 
-        {/* Table / List */}
-        <div className="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden shadow-xl">
-          <div className="p-4 border-b border-slate-700 flex items-center justify-between">
-            <h2 className="text-base font-bold text-white flex items-center space-x-2">
-              <span>Daftar Pesan & Pendaftaran</span>
-              <span className="text-xs bg-emerald-950 text-emerald-300 border border-emerald-800 px-2.5 py-0.5 rounded-full font-bold">
-                {filteredRegistrations.length} Data
-              </span>
-            </h2>
+        <div className="bg-white p-6 rounded-lg shadow border-l-4 border-amber-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-500">Asatidz & Pengajar</p>
+              <p className="text-2xl font-bold text-gray-800">{asatidz.length}</p>
+            </div>
+            <UserCheck className="text-amber-500" size={32} />
           </div>
+        </div>
 
-          {loading ? (
-            <div className="p-12 text-center text-slate-400 text-sm">
-              <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-3 text-emerald-500" />
-              <span>Memuat data pendaftaran...</span>
+        <div className="bg-white p-6 rounded-lg shadow border-l-4 border-purple-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-500">Kegiatan</p>
+              <p className="text-2xl font-bold text-gray-800">{activities.length}</p>
             </div>
-          ) : filteredRegistrations.length === 0 ? (
-            <div className="p-12 text-center text-slate-400 text-sm">
-              Tidak ada data pendaftaran yang ditemukan.
-            </div>
-          ) : (
-            <div className="divide-y divide-slate-700/60">
-              {filteredRegistrations.map((reg) => (
-                <div key={reg.id} className="p-5 hover:bg-slate-750 transition-colors space-y-3">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <div className="flex items-center space-x-3">
-<span className="text-xs font-mono font-bold bg-slate-900 text-emerald-400 border border-slate-700 px-2.5 py-1 rounded-lg">
-                         REG-{reg.id}
-                       </span>
-                      <h3 className="font-bold text-base text-white flex items-center space-x-2">
-                        <User className="w-4 h-4 text-amber-400" />
-                        <span>{reg.name}</span>
-                      </h3>
-                    </div>
+            <Calendar className="text-purple-500" size={32} />
+          </div>
+        </div>
+      </div>
 
-                    <div className="flex items-center space-x-4 text-xs text-slate-400">
-                      <span className="flex items-center space-x-1">
-                        <Calendar className="w-3.5 h-3.5" />
-                        <span>
-                          {new Date(reg.createdAt).toLocaleDateString('id-ID', {
-                            day: 'numeric',
-                            month: 'short',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })}
-                        </span>
-                      </span>
+      {/* Recent Registrations Table */}
+      <div className="bg-white rounded-lg shadow p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-bold text-gray-800">Pendaftaran Terbaru</h2>
+          <Link
+            href="/admin/pendaftaran"
+            className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1"
+          >
+            Lihat Semua <ArrowRight size={16} />
+          </Link>
+        </div>
 
-                      <a
-                        href={`https://wa.me/${reg.phone.replace(/[^0-9]/g, '')}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-emerald-600/20 hover:bg-emerald-600/40 border border-emerald-500/40 text-emerald-300 px-3 py-1 rounded-lg font-bold flex items-center space-x-1.5 transition-colors"
-                      >
-                        <Phone className="w-3.5 h-3.5" />
-                        <span>WhatsApp ({reg.phone})</span>
-                      </a>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 text-xs pt-1">
-                    <div className="sm:col-span-4 bg-slate-900/60 p-3 rounded-xl border border-slate-700/60">
-                      <span className="text-slate-400 font-semibold block mb-1 flex items-center space-x-1">
-                        <Layers className="w-3.5 h-3.5 text-amber-400" />
-                        <span>Program Minat:</span>
-                      </span>
-                      <span className="text-slate-200 font-bold">{reg.program}</span>
-                    </div>
-
-                    <div className="sm:col-span-8 bg-slate-900/60 p-3 rounded-xl border border-slate-700/60">
-                      <span className="text-slate-400 font-semibold block mb-1 flex items-center space-x-1">
-                        <MessageSquare className="w-3.5 h-3.5 text-emerald-400" />
-                        <span>Pesan / Catatan:</span>
-                      </span>
-                      <span className="text-slate-200 italic">{reg.message || '(Tidak ada pesan)'}</span>
-                    </div>
-                  </div>
-                </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-4 py-3 text-sm font-medium text-gray-700">ID</th>
+                <th className="px-4 py-3 text-sm font-medium text-gray-700">Nama</th>
+                <th className="px-4 py-3 text-sm font-medium text-gray-700">WhatsApp</th>
+                <th className="px-4 py-3 text-sm font-medium text-gray-700">Program</th>
+                <th className="px-4 py-3 text-sm font-medium text-gray-700">Tanggal</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {recentRegistrations.map((reg) => (
+                <tr key={reg.id}>
+                  <td className="px-4 py-3 text-sm text-gray-900">REG-{reg.id}</td>
+                  <td className="px-4 py-3 text-sm text-gray-900">{reg.name}</td>
+                  <td className="px-4 py-3 text-sm text-gray-900">
+                    <a
+                      href={`https://wa.me/${reg.phone}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      {reg.phone}
+                    </a>
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-900">{reg.program}</td>
+                  <td className="px-4 py-3 text-sm text-gray-500">
+                    {reg.createdAt.toLocaleDateString('id-ID')}
+                  </td>
+                </tr>
               ))}
-            </div>
+            </tbody>
+          </table>
+          {recentRegistrations.length === 0 && (
+            <div className="px-4 py-8 text-center text-gray-500">Belum ada pendaftaran</div>
           )}
         </div>
-      </main>
+      </div>
     </div>
   );
 }

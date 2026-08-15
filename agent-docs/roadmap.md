@@ -16,7 +16,7 @@
 | 2 | Fondasi Prisma | ✅ SELESAI | 2026-07-31 |
 | 3 | Alihkan pembacaan ke Prisma | ✅ SELESAI | 2026-08-09 |
 | 4 | Alihkan penulisan | ✅ SELESAI | 2026-08-09 |
-| 5 | Shell admin + primitive | ⏳ Belum | - |
+| 5 | Shell admin + primitive | 🔨 In Progress | - |
 | 6 | CMS singleton | ⏳ Belum | - |
 | 7 | CMS koleksi | ⏳ Belum | - |
 | 8 | Upload gambar | ⏳ Belum | - |
