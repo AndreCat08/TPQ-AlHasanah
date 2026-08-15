@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:nodemon": "nodemon",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -24,6 +25,8 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "autoprefixer": "^10.4.20",
+    "kill-port": "^2.0.1",
+    "nodemon": "^3.1.14",
     "postcss": "^8.4.47",
     "prisma": "^6.19.3",
     "tailwindcss": "^3.4.14",
