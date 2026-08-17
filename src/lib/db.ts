@@ -178,29 +178,33 @@ export async function getRegistrations(): Promise<RegistrationItem[]> {
 }
 
 export async function updateProfile(data: ProfileData) {
+  const { stats, ...profileData } = data;
   await prisma.profile.upsert({
     where: { id: 1 },
     update: {
-      ...data,
-      statsJson: JSON.stringify(data.stats)
+      ...profileData,
+      statsJson: JSON.stringify(stats)
     },
     create: {
-      ...data,
-      statsJson: JSON.stringify(data.stats)
+      ...profileData,
+      id: 1,
+      statsJson: JSON.stringify(stats)
     }
   })
 }
 
 export async function updateVisiMisi(data: VisiMisiData) {
+  const { misi, ...visiMisiData } = data;
   await prisma.visiMisi.upsert({
     where: { id: 1 },
     update: {
-      ...data,
-      misiJson: JSON.stringify(data.misi)
+      ...visiMisiData,
+      misiJson: JSON.stringify(misi)
     },
     create: {
-      ...data,
-      misiJson: JSON.stringify(data.misi)
+      ...visiMisiData,
+      id: 1,
+      misiJson: JSON.stringify(misi)
     }
   })
 }
