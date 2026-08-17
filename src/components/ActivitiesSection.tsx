@@ -68,7 +68,15 @@ export default function ActivitiesSection({ activities }: ActivitiesSectionProps
                   {activity.category}
                 </div>
                 <div className="absolute top-3 right-3 bg-amber-500 text-slate-950 text-[11px] font-extrabold px-2.5 py-1 rounded-md shadow">
-                  {activity.date}
+                  {activity.isRoutine
+                    ? activity.routineNotes || 'Tidak ada catatan rutin'
+                    : activity.activityDate
+                      ? new Date(activity.activityDate).toLocaleDateString('id-ID', {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric',
+                        })
+                      : 'Tanggal tidak tersedia'}
                 </div>
               </div>
 
@@ -115,7 +123,18 @@ export default function ActivitiesSection({ activities }: ActivitiesSectionProps
                   {selectedActivity.category}
                 </span>
                 <h3 className="text-2xl font-bold">{selectedActivity.title}</h3>
-                <p className="text-xs text-slate-300 mt-1">Tanggal: {selectedActivity.date}</p>
+                <p className="text-xs text-slate-300 mt-1">
+                  Waktu:{' '}
+                  {selectedActivity.isRoutine
+                    ? selectedActivity.routineNotes || 'Tidak ada catatan rutin'
+                    : selectedActivity.activityDate
+                      ? new Date(selectedActivity.activityDate).toLocaleDateString('id-ID', {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric',
+                        })
+                      : 'Tanggal tidak tersedia'}
+                </p>
               </div>
             </div>
 

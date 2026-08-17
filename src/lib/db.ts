@@ -37,7 +37,9 @@ export interface ActivityItem {
   id: number
   title: string
   category: string
-  date: string
+  routineNotes?: string
+  activityDate?: Date
+  isRoutine: boolean
   image: string
   description: string
 }
@@ -57,6 +59,12 @@ export interface RegistrationItem {
   program: string
   message: string
   createdAt: Date
+}
+
+export interface IconItem {
+  id: number
+  label: string
+  value: string
 }
 
 export interface DBStructure {
@@ -116,7 +124,9 @@ function adaptActivity(activity: any): ActivityItem {
     id: activity.id,
     title: activity.title,
     category: activity.category,
-    date: activity.date,
+    routineNotes: activity.routineNotes,
+    activityDate: activity.activityDate ? new Date(activity.activityDate) : undefined,
+    isRoutine: activity.isRoutine,
     image: activity.image,
     description: activity.description
   }
@@ -168,6 +178,13 @@ export async function getSampleDoas(): Promise<SampleDoaItem[]> {
     orderBy: [{ order: 'asc' }, { id: 'asc' }]
   })
   return sampleDoas.map(adaptSampleDoa)
+}
+
+export async function getIcons(): Promise<IconItem[]> {
+  const icons = await prisma.icon.findMany({
+    orderBy: [{ id: 'asc' }]
+  })
+  return icons
 }
 
 export async function getRegistrations(): Promise<RegistrationItem[]> {
@@ -304,7 +321,9 @@ export async function createActivity(data: Omit<ActivityItem, 'id'>): Promise<Ac
     data: {
       title: data.title,
       category: data.category,
-      date: data.date,
+      routineNotes: data.routineNotes,
+      activityDate: data.activityDate,
+      isRoutine: data.isRoutine,
       image: data.image,
       description: data.description,
       order: maxOrder,
@@ -318,7 +337,9 @@ export async function updateActivity(id: number, data: Omit<ActivityItem, 'id'>)
     data: {
       title: data.title,
       category: data.category,
-      date: data.date,
+      routineNotes: data.routineNotes,
+      activityDate: data.activityDate,
+      isRoutine: data.isRoutine,
       image: data.image,
       description: data.description,
     }

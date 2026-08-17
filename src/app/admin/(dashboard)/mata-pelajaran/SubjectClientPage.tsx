@@ -3,9 +3,9 @@
 import React from 'react';
 import CollectionEditor from '@/components/admin/CollectionEditor';
 import { saveSubjectAction, deleteSubjectAction, reorderSubjectsAction } from './actions';
-import { type SubjectItem } from '@/lib/db';
+import { type SubjectItem, type IconItem } from '@/lib/db';
 
-export default function SubjectClientPage({ initialData }: { initialData: SubjectItem[] }) {
+export default function SubjectClientPage({ initialData, icons }: { initialData: SubjectItem[]; icons: IconItem[] }) {
   return (
     <CollectionEditor<SubjectItem>
       title="Manajemen Mata Pelajaran"
@@ -33,12 +33,17 @@ export default function SubjectClientPage({ initialData }: { initialData: Subjec
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">Ikon</label>
-              <input
-                type="text"
+              <select
                 value={item.icon || ''}
                 onChange={(e) => onChange('icon', e.target.value)}
                 className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-              />
+              >
+                {icons.map((icon) => (
+                  <option key={icon.value} value={icon.value}>
+                    {icon.value} {icon.label}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
           <div>
@@ -60,13 +65,37 @@ export default function SubjectClientPage({ initialData }: { initialData: Subjec
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Topik (pisahkan dengan koma)</label>
-            <textarea
-              value={item.topics?.join(', ') || ''}
-              onChange={(e) => onChange('topics', e.target.value.split(',').map(s => s.trim()).filter(Boolean))}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-              placeholder="Contoh: Tajwid, Makhraj"
-            />
+            <label className="block text-sm font-medium text-gray-700">Topik</label>
+            <div className="space-y-2">
+              {(item.topics || []).map((topic, i) => (
+                <div key={i} className="flex gap-2">
+                  <input
+                    type="text"
+                    value={topic}
+                    onChange={(e) => {
+                      const newTopics = [...(item.topics || [])];
+                      newTopics[i] = e.target.value;
+                      onChange('topics', newTopics);
+                    }}
+                    className="flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => onChange('topics', (item.topics || []).filter((_, index) => index !== i))}
+                    className="text-red-500 px-2"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => onChange('topics', [...(item.topics || []), ''])}
+                className="text-sm text-blue-600 font-medium"
+              >
+                + Tambah Topik
+              </button>
+            </div>
           </div>
         </div>
       )}

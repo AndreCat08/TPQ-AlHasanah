@@ -121,27 +121,6 @@ export default function Navbar({ profile }: NavbarProps) {
         </nav>
 
         {/* Header Action Buttons */}
-        <div className="hidden lg:flex items-center space-x-3">
-          <a
-            href={`/admin`}
-            className="inline-flex items-center space-x-1.5 bg-slate-800/80 hover:bg-slate-800 text-slate-200 px-3.5 py-2 rounded-lg font-bold text-xs border border-slate-600/50 transition-all"
-          >
-            <span>Panel Admin</span>
-          </a>
-
-          <a
-            href={`https://wa.me/${profile.phone}?text=Assalamu'alaikum,%20saya%20ingin%20mendaftar/bertanya%20mengenai%20${encodeURIComponent(
-              profile.name
-            )}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center space-x-2 bg-amber-500 hover:bg-amber-600 text-slate-950 px-4 py-2 rounded-lg font-bold text-sm shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5"
-          >
-            <Phone className="w-4 h-4" />
-            <span>Daftar Santri</span>
-          </a>
-        </div>
-
         {/* Mobile Menu Toggle Button */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -172,13 +151,6 @@ export default function Navbar({ profile }: NavbarProps) {
             </button>
           ))}
           <div className="pt-3 border-t border-slate-100 space-y-2">
-            <a
-              href="/admin"
-              className="w-full inline-flex items-center justify-center space-x-2 bg-slate-100 hover:bg-slate-200 text-slate-900 py-3 rounded-xl font-bold"
-            >
-              <span>Panel Admin Pendaftaran</span>
-            </a>
-
             <a
               href={`https://wa.me/${profile.phone}?text=Assalamu'alaikum,%20saya%20ingin%20mendaftar/bertanya%20mengenai%20${encodeURIComponent(
                 profile.name

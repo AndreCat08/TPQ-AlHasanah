@@ -49,14 +49,16 @@ model Asatidz {
 }
 
 model Activity {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   title       String
   category    String
-  date        String   // "15 Mei 2026" / "Rutin Mingguan"
+  routineNotes String?
+  activityDate DateTime?
+  isRoutine   Boolean   @default(false)
   image       String
   description String
-  order       Int      @default(0)
-  updatedAt   DateTime @updatedAt
+  order       Int       @default(0)
+  updatedAt   DateTime  @updatedAt
 }
 
 model Doa {
@@ -76,4 +78,11 @@ model Registration {
   program   String
   message   String
   createdAt DateTime @default(now())
+}
+
+model Icon {
+  id        Int      @id @default(autoincrement())
+  label     String
+  value     String   // emoji
+  updatedAt DateTime @updatedAt
 }

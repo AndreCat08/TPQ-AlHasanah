@@ -107,7 +107,7 @@ async function main() {
         update: {
           title: activity.title,
           category: activity.category,
-          date: activity.date,
+          routineNotes: activity.date, // Map old 'date' to 'routineNotes'
           image: activity.image,
           description: activity.description,
           order: activity.id - 1
@@ -116,7 +116,7 @@ async function main() {
           id: activity.id,
           title: activity.title,
           category: activity.category,
-          date: activity.date,
+          routineNotes: activity.date, // Map old 'date' to 'routineNotes'
           image: activity.image,
           description: activity.description,
           order: activity.id - 1
@@ -163,6 +163,32 @@ async function main() {
           program: reg.program,
           message: reg.message,
           createdAt: new Date(reg.createdAt)
+        }
+      })
+    }
+
+    const defaultIcons = [
+      { label: 'Buku', value: '📚' },
+      { label: 'Al-Qur\'an', value: '📖' },
+      { label: 'Masjid', value: '🕌' },
+      { label: 'Hati', value: '❤️' },
+      { label: 'Bintang', value: '⭐' },
+      { label: 'Pensil', value: '✏️' },
+      { label: 'Lampu', value: '💡' },
+      { label: 'Wisuda', value: '🎓' },
+      { label: 'Orang', value: '👤' },
+      { label: 'Kelompok', value: '👥' },
+      { label: 'Kegiatan', value: '📅' },
+      { label: 'Doa', value: '🙏' },
+    ]
+
+    for (const icon of defaultIcons) {
+      await prisma.icon.upsert({
+        where: { id: defaultIcons.indexOf(icon) + 1 },
+        update: icon,
+        create: {
+          id: defaultIcons.indexOf(icon) + 1,
+          ...icon
         }
       })
     }

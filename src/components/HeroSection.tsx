@@ -42,13 +42,12 @@ export default function HeroSection({ profile }: HeroSectionProps) {
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
               <a
-                href={`https://wa.me/${profile.phone}?text=Assalamu'alaikum,%20saya%20mau%20daftar%20santri%20baru%20TPQ%20Al-Hasanah`}
-                target="_blank"
-                rel="noopener noreferrer"
+                href="#contact"
+                onClick={() => scrollToSection('contact')}
                 className="w-full sm:w-auto inline-flex items-center justify-center space-x-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-emerald-500/20 transition-all transform hover:-translate-y-1"
               >
-                <Phone className="w-5 h-5" />
-                <span>Daftar Sekarang (WhatsApp)</span>
+                <Sparkles className="w-5 h-5" />
+                <span>Daftar Santri Baru</span>
               </a>
 
               <button

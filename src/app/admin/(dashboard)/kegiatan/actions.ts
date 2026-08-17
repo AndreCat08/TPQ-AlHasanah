@@ -10,7 +10,13 @@ export async function saveActivityAction(
 ): Promise<CollectionFormState> {
   await requireSession();
   
-  const validationResult = activitySchema.safeParse(item);
+  const validatedData = {
+    ...item,
+    // Clear opposite field based on isRoutine
+    ...(item.isRoutine ? { activityDate: undefined } : { routineNotes: undefined }),
+  };
+  
+  const validationResult = activitySchema.safeParse(validatedData);
 
   if (!validationResult.success) {
     return {
@@ -20,9 +26,17 @@ export async function saveActivityAction(
 
   try {
     if (item.id) {
-      await updateActivity(item.id, validationResult.data);
+      await updateActivity(item.id, {
+        ...validationResult.data,
+        activityDate: validationResult.data.activityDate ? new Date(validationResult.data.activityDate) : null,
+        routineNotes: validationResult.data.routineNotes || null,
+      } as any);
     } else {
-      await createActivity(validationResult.data);
+      await createActivity({
+        ...validationResult.data,
+        activityDate: validationResult.data.activityDate ? new Date(validationResult.data.activityDate) : null,
+        routineNotes: validationResult.data.routineNotes || null,
+      } as any);
     }
     revalidatePath('/');
     return { success: true };

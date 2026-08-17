@@ -1,7 +1,8 @@
-import { getSubjects } from '@/lib/db';
+import { getSubjects, getIcons } from '@/lib/db';
 import SubjectClientPage from './SubjectClientPage';
 
 export default async function AdminSubjectPage() {
   const subjects = await getSubjects();
-  return <SubjectClientPage initialData={subjects} />;
+  const icons = await getIcons();
+  return <SubjectClientPage initialData={subjects} icons={icons} />;
 }

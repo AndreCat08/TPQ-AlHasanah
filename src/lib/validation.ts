@@ -48,9 +48,35 @@ export const asatidzSchema = z.object({
 export const activitySchema = z.object({
   title: z.string().min(1, 'Judul kegiatan harus diisi'),
   category: z.string().min(1, 'Kategori harus diisi'),
-  date: z.string().min(1, 'Tanggal harus diisi'),
+  routineNotes: z.string().min(1, 'Catatan rutin harus diisi').optional(),
+  activityDate: z.string().datetime().optional(), // ISO string from DatePicker
+  isRoutine: z.boolean(),
   image: z.string().min(1, 'URL gambar harus diisi'),
   description: z.string().min(1, 'Deskripsi harus diisi'),
+}).refine(data => {
+  if (!data.isRoutine && !data.activityDate) {
+    return false; // Must have activityDate if not routine
+  }
+  if (data.isRoutine && !data.routineNotes) {
+    return false; // Must have routineNotes if routine
+  }
+  return true;
+}, {
+  message: 'Isi Tanggal Kegiatan atau Catatan Rutin',
+  path: ['activityDate'], // Attach error to activityDate field if it fails
+}).refine(data => {
+  // If not routine, routineNotes should be undefined
+  if (!data.isRoutine && data.routineNotes) {
+    return false;
+  }
+  // If routine, activityDate should be undefined
+  if (data.isRoutine && data.activityDate) {
+    return false;
+  }
+  return true;
+}, {
+  message: 'Pilih salah satu: Tanggal Kegiatan atau Rutin',
+  path: ['isRoutine'], // Attach error to isRoutine field
 });
 
 export const doaSchema = z.object({

@@ -71,7 +71,7 @@ export default function DoaSection({ doas }: DoaSectionProps) {
             <div className="bg-slate-950/80 p-6 rounded-2xl border border-slate-700 space-y-6">
               <div>
                 <span className="text-xs uppercase font-extrabold text-amber-400 tracking-wider">Teks Arab</span>
-                <p className="text-2xl sm:text-3xl font-serif text-right text-emerald-300 mt-3 leading-loose" dir="rtl">
+                <p className="text-2xl sm:text-3xl font-serif text-right text-emerald-300 mt-3 leading-loose break-words" dir="rtl">
                   {selectedDoa.arabic}
                 </p>
               </div>
