@@ -49,6 +49,10 @@ Dokumen ini mencatat riwayat perintah, keputusan arsitektur, dan daftar perubaha
 
 ## 📝 3. Perubahan-Perubahan yang Dilakukan (Changes Log)
 
+| Tanggal | Perintah / Keterangan | Tujuan / Hasil |
+|---|---|---|
+| 2026-08-15 | Verifikasi Fase 5 (Shell admin + primitive) | ✅ Complete: implemented layout with sidebar, moved registration viewer to `/admin/pendaftaran`, built new dashboard at `/admin`, updated detail section to reflect completion. Built successfully with 18 routes. |
+
 ### Inisialisasi & Konfigurasi Proyek
 - Created `package.json` dengan Next.js 14, React 18, Tailwind CSS, & Lucide React.
 - Created `tsconfig.json` dengan path alias `@/*` -> `src/*`.

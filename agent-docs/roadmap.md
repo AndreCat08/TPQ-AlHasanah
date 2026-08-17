@@ -87,9 +87,21 @@
 
 ---
 
-### ⏳ Fase 5 — Shell admin + primitive
+### ✅ Fase 5 — Shell admin + primitive (SELESAI)
 
 **Inti pekerjaan**: `src/app/admin/layout.tsx` dengan sidebar, komponen di `src/components/admin/`, pindahkan viewer pendaftaran ke `/admin/pendaftaran`, dashboard baru di `/admin`.
+
+**File dibuat**:
+- `src/app/admin/(dashboard)/layout.tsx` — sidebar gelap (Dashboard, Pendaftaran, Keluar). Dipakai route group `(dashboard)` sehingga sidebar hanya muncul di `/admin` & `/admin/pendaftaran`, `/admin/login` tetap tanpa sidebar.
+- `src/components/admin/LogoutButton.tsx` — tombol keluar.
+- `src/app/admin/(dashboard)/page.tsx` — dashboard baru: sapa nama profil, 4 kartu statistik (Pendaftar, Matpel, Asatidz, Kegiatan), tabel pendaftaran terbaru (5) dengan link WhatsApp `wa.me`, tautan "Lihat Semua" ke `/admin/pendaftaran`.
+- `src/app/admin/(dashboard)/pendaftaran/page.tsx` — viewer pendaftaran penuh (pindahan dari `/admin` lama).
+
+**File dihapus**: `src/app/admin/page.tsx` lama (digantikan `(dashboard)/page.tsx`).
+
+**Verifikasi**: ✅ `npm run build` lolos (18 rute, naik dari 17 berkat rute baru `/admin/pendaftaran`). Middleware tetap melindungi `/admin/:path*` & `/api/admin/:path*` (Fase 1). Pemeriksaan manual login+sidebar di browser belum dilakukan — disarankan sebelum Fase 6.
+
+**Catatan minor (untuk Fase 9)**: kartu "Status Sistem" lama sudah hilang bersama `/admin/page.tsx` tua, tidak ada sisa copy basi.
 
 **Risiko**: Rendah.
 

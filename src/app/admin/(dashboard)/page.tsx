@@ -1,4 +1,4 @@
-import { getRegistrations, getProfile, getSubjects, getAsatidz, getActivities } from '@/lib/db';
+import { getRegistrations, getProfile, getSubjects, getAsatidz, getActivities, getSampleDoas } from '@/lib/db';
 import { requireSession } from '@/lib/session';
 import Link from 'next/link';
 import { Users, BookOpen, UserCheck, Calendar, ArrowRight } from 'lucide-react';
@@ -11,6 +11,7 @@ export default async function AdminDashboardPage() {
   const subjects = await getSubjects();
   const asatidz = await getAsatidz();
   const activities = await getActivities();
+  const doas = await getSampleDoas();
 
   const recentRegistrations = registrations.slice(0, 5);
 
@@ -20,7 +21,7 @@ export default async function AdminDashboardPage() {
       <p className="text-gray-600">Selamat datang di panel admin {profile.name}.</p>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-white p-6 rounded-lg shadow border-l-4 border-blue-500">
           <div className="flex items-center justify-between">
             <div>
@@ -44,7 +45,7 @@ export default async function AdminDashboardPage() {
         <div className="bg-white p-6 rounded-lg shadow border-l-4 border-amber-500">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-500">Asatidz & Pengajar</p>
+              <p className="text-sm font-medium text-gray-500">Asatidz</p>
               <p className="text-2xl font-bold text-gray-800">{asatidz.length}</p>
             </div>
             <UserCheck className="text-amber-500" size={32} />
