@@ -28,3 +28,43 @@ export type ProfileFormState =
 export type VisiMisiFormState = 
   | { success: true; errors?: never }
   | { success?: false; errors: Record<string, string[] | undefined> };
+
+export const subjectSchema = z.object({
+  title: z.string().min(1, 'Nama mata pelajaran harus diisi'),
+  category: z.string().min(1, 'Kategori harus diisi'),
+  icon: z.string().min(1, 'Ikon harus diisi'),
+  desc: z.string().min(1, 'Deskripsi harus diisi'),
+  topics: z.array(z.string()).min(1, 'Minimal satu topik'),
+});
+
+export const asatidzSchema = z.object({
+  name: z.string().min(1, 'Nama harus diisi'),
+  role: z.string().min(1, 'Jabatan harus diisi'),
+  bio: z.string().min(1, 'Bio harus diisi'),
+  image: z.string().min(1, 'URL gambar harus diisi'),
+  quote: z.string().min(1, 'Kutipan harus diisi'),
+});
+
+export const activitySchema = z.object({
+  title: z.string().min(1, 'Judul kegiatan harus diisi'),
+  category: z.string().min(1, 'Kategori harus diisi'),
+  date: z.string().min(1, 'Tanggal harus diisi'),
+  image: z.string().min(1, 'URL gambar harus diisi'),
+  description: z.string().min(1, 'Deskripsi harus diisi'),
+});
+
+export const doaSchema = z.object({
+  title: z.string().min(1, 'Judul doa harus diisi'),
+  arabic: z.string().min(1, 'Teks Arab harus diisi'),
+  latin: z.string().min(1, 'Teks Latin harus diisi'),
+  meaning: z.string().min(1, 'Arti harus diisi'),
+});
+
+export type SubjectFormData = z.infer<typeof subjectSchema>;
+export type AsatidzFormData = z.infer<typeof asatidzSchema>;
+export type ActivityFormData = z.infer<typeof activitySchema>;
+export type DoaFormData = z.infer<typeof doaSchema>;
+
+export type CollectionFormState = 
+  | { success: true; errors?: never }
+  | { success?: false; errors: Record<string, string[] | undefined> };

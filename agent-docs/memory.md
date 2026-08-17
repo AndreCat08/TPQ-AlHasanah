@@ -26,6 +26,9 @@ Dokumen ini mencatat riwayat perintah, keputusan arsitektur, dan daftar perubaha
 | 2026-07-31 | `npm run dev` | Homepage `GET /` 200. *(Berhasil)* |
 | 2026-07-31 | Update `.env.local` | Ganti `DATABASE_URL` ke absolute path Windows agar Prisma konek dev server. |
 
+| 2026-08-17 | Fix update db | Perbaikan `updateProfile` & `updateVisiMisi` (destructure data non-Prisma). *(Berhasil)* |
+| 2026-08-17 | `npm run build` | Verifikasi Fase 6. *(Berhasil)* |
+
 ---
 
 ## 🧠 2. Keputusan Arsitektur & Desain (Decisions)

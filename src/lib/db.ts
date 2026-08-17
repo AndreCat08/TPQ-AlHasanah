@@ -221,3 +221,153 @@ export async function addRegistration(name: string, phone: string, program: stri
   })
   return newReg
 }
+
+export async function createSubject(data: Omit<SubjectItem, 'id'>): Promise<SubjectItem> {
+  const maxOrder = await prisma.subject.count();
+  return adaptSubject(await prisma.subject.create({
+    data: {
+      title: data.title,
+      category: data.category,
+      icon: data.icon,
+      desc: data.desc,
+      topicsJson: JSON.stringify(data.topics),
+      order: maxOrder,
+    }
+  }))
+}
+
+export async function updateSubject(id: number, data: Omit<SubjectItem, 'id'>): Promise<SubjectItem> {
+  return adaptSubject(await prisma.subject.update({
+    where: { id },
+    data: {
+      title: data.title,
+      category: data.category,
+      icon: data.icon,
+      desc: data.desc,
+      topicsJson: JSON.stringify(data.topics),
+    }
+  }))
+}
+
+export async function deleteSubject(id: number): Promise<void> {
+  await prisma.subject.delete({ where: { id } })
+}
+
+export async function reorderSubjects(orderedIds: number[]): Promise<void> {
+  const updates = orderedIds.map((id, index) =>
+    prisma.subject.update({ where: { id }, data: { order: index } })
+  );
+  await prisma.$transaction(updates);
+}
+
+export async function createAsatidz(data: Omit<AsatidzItem, 'id'>): Promise<AsatidzItem> {
+  const maxOrder = await prisma.asatidz.count();
+  return adaptAsatidz(await prisma.asatidz.create({
+    data: {
+      name: data.name,
+      role: data.role,
+      bio: data.bio,
+      image: data.image,
+      quote: data.quote,
+      order: maxOrder,
+    }
+  }))
+}
+
+export async function updateAsatidz(id: number, data: Omit<AsatidzItem, 'id'>): Promise<AsatidzItem> {
+  return adaptAsatidz(await prisma.asatidz.update({
+    where: { id },
+    data: {
+      name: data.name,
+      role: data.role,
+      bio: data.bio,
+      image: data.image,
+      quote: data.quote,
+    }
+  }))
+}
+
+export async function deleteAsatidz(id: number): Promise<void> {
+  await prisma.asatidz.delete({ where: { id } })
+}
+
+export async function reorderAsatidz(orderedIds: number[]): Promise<void> {
+  const updates = orderedIds.map((id, index) =>
+    prisma.asatidz.update({ where: { id }, data: { order: index } })
+  );
+  await prisma.$transaction(updates);
+}
+
+export async function createActivity(data: Omit<ActivityItem, 'id'>): Promise<ActivityItem> {
+  const maxOrder = await prisma.activity.count();
+  return adaptActivity(await prisma.activity.create({
+    data: {
+      title: data.title,
+      category: data.category,
+      date: data.date,
+      image: data.image,
+      description: data.description,
+      order: maxOrder,
+    }
+  }))
+}
+
+export async function updateActivity(id: number, data: Omit<ActivityItem, 'id'>): Promise<ActivityItem> {
+  return adaptActivity(await prisma.activity.update({
+    where: { id },
+    data: {
+      title: data.title,
+      category: data.category,
+      date: data.date,
+      image: data.image,
+      description: data.description,
+    }
+  }))
+}
+
+export async function deleteActivity(id: number): Promise<void> {
+  await prisma.activity.delete({ where: { id } })
+}
+
+export async function reorderActivities(orderedIds: number[]): Promise<void> {
+  const updates = orderedIds.map((id, index) =>
+    prisma.activity.update({ where: { id }, data: { order: index } })
+  );
+  await prisma.$transaction(updates);
+}
+
+export async function createDoa(data: Omit<SampleDoaItem, 'id'>): Promise<SampleDoaItem> {
+  const maxOrder = await prisma.doa.count();
+  return adaptSampleDoa(await prisma.doa.create({
+    data: {
+      title: data.title,
+      arabic: data.arabic,
+      latin: data.latin,
+      meaning: data.meaning,
+      order: maxOrder,
+    }
+  }))
+}
+
+export async function updateDoa(id: number, data: Omit<SampleDoaItem, 'id'>): Promise<SampleDoaItem> {
+  return adaptSampleDoa(await prisma.doa.update({
+    where: { id },
+    data: {
+      title: data.title,
+      arabic: data.arabic,
+      latin: data.latin,
+      meaning: data.meaning,
+    }
+  }))
+}
+
+export async function deleteDoa(id: number): Promise<void> {
+  await prisma.doa.delete({ where: { id } })
+}
+
+export async function reorderDoas(orderedIds: number[]): Promise<void> {
+  const updates = orderedIds.map((id, index) =>
+    prisma.doa.update({ where: { id }, data: { order: index } })
+  );
+  await prisma.$transaction(updates);
+}

@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Users, Building, Target } from 'lucide-react';
+import { LayoutDashboard, Users, Building, Target, BookOpen, UserCheck, Calendar, Book } from 'lucide-react';
 import LogoutButton from '@/components/admin/LogoutButton';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -12,6 +12,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const navItems = [
     { href: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
     { href: '/admin/pendaftaran', icon: Users, label: 'Pendaftaran' },
+    { href: '/admin/mata-pelajaran', icon: BookOpen, label: 'Mata Pelajaran' },
+    { href: '/admin/asatidz', icon: UserCheck, label: 'Asatidz' },
+    { href: '/admin/kegiatan', icon: Calendar, label: 'Kegiatan' },
+    { href: '/admin/doa', icon: Book, label: 'Doa' },
     { href: '/admin/profil', icon: Building, label: 'Profil' },
     { href: '/admin/visi-misi', icon: Target, label: 'Visi & Misi' },
   ];

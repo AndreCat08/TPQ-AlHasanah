@@ -17,8 +17,8 @@
 | 3 | Alihkan pembacaan ke Prisma | ✅ SELESAI | 2026-08-09 |
 | 4 | Alihkan penulisan | ✅ SELESAI | 2026-08-09 |
 | 5 | Shell admin + primitive | ✅ SELESAI | 2026-08-15 |
-| 6 | CMS singleton | ⏳ Belum | - |
-| 7 | CMS koleksi | ⏳ Belum | - |
+| 6 | CMS singleton | ✅ SELESAI | 2026-08-17 |
+| 7 | CMS koleksi | ⏳ Sedang | - |
 | 8 | Upload gambar | ⏳ Belum | - |
 | 9 | Pemantapan | ⏳ Belum | - |
 
